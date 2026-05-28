@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>De Rijder & De Machine, Senn Lauwers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black:   #080808;
+  --dark:    #0f0f0f;
+  --surface: #161616;
+  --border:  #222;
+  --orange:  #FF5200;
+  --amber:   #FFB300;
+  --text:    #EDE8DF;
+  --muted:   #555;
+  --faint:   #2a2a2a;
+  --F: 'Bebas Neue', sans-serif;
+  --UI: 'Syne', sans-serif;
+  --B: 'DM Sans', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: var(--B);
+  line-height: 1.65;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* hide custom cursor on touch */
+@media (hover: none) {
+  body { cursor: auto; }
+  #cursor, #cursorRing { display: none; }
+}
+
+/* ─── GRAIN OVERLAY ─────────────────────────────────── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9000;
+  opacity: .032;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ─── CURSOR ────────────────────────────────────────── */
+#cursor {
+  position: fixed;
+  width: 10px; height: 10px;
+  background: var(--orange);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: transform .15s ease;
+}
+#cursorRing {
+  position: fixed;
+  width: 34px; height: 34px;
+  border: 1px solid rgba(255,82,0,.45);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: width .3s, height .3s, border-color .3s;
+}
+
+/* ─── NAV ───────────────────────────────────────────── */
+nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 500;
+  padding: 1.5rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background .35s, backdrop-filter .35s, border-color .35s;
+  border-bottom: 1px solid transparent;
+}
+nav.scrolled {
+  background: rgba(8,8,8,.88);
+  backdrop-filter: blur(14px);
+  border-color: var(--border);
+}
+.nav-logo {
+  font-family: var(--UI);
+  font-weight: 700;
+  font-size: .9rem;
+  letter-spacing: .07em;
+  color: var(--text);
+  text-decoration: none;
+}
+.nav-links { display: flex; gap: 2rem; align-items: center; }
+.nav-links a {
+  font-family: var(--UI);
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-cta {
+  color: var(--white) !important;
+  background: var(--orange);
+  padding: .45rem 1.1rem !important;
+  letter-spacing: .1em !important;
+  transition: background .2s !important;
+}
+.nav-cta:hover { background: #df4800; color: #fff !important; }
+@media (max-width: 680px) {
+  nav { padding: 1.25rem 1.5rem; }
+  .nav-links { display: none; }
+}
+
+/* ─── HERO ──────────────────────────────────────────── */
+#hero {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 7rem 3rem 5rem;
+  position: relative;
+  overflow: hidden;
+}
+/* racing diagonal stripes */
+#hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(108deg, transparent 58%, rgba(255,82,0,.035) 58%, rgba(255,82,0,.035) 58.5%, transparent 58.5%),
+    linear-gradient(108deg, transparent 62%, rgba(255,82,0,.02) 62%, rgba(255,82,0,.02) 62.8%, transparent 62.8%);
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  font-family: var(--UI);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp .6s .2s forwards;
+}
+
+.hero-title {
+  font-family: var(--F);
+  line-height: .88;
+  margin-bottom: 3rem;
+}
+.hero-title .line { display: block; overflow: hidden; }
+.hero-title .line span {
+  display: block;
+  transform: translateY(105%);
+  animation: slideUp .9s cubic-bezier(.16,1,.3,1) forwards;
+}
+.hero-title .line:nth-child(1) span { font-size: clamp(4.5rem,11vw,12.5rem); animation-delay: .3s; }
+.hero-title .line:nth-child(2) span { font-size: clamp(2.8rem,6.5vw,7.5rem); color: var(--orange); animation-delay: .45s; }
+.hero-title .line:nth-child(3) span { font-size: clamp(4.5rem,11vw,12.5rem); animation-delay: .6s; }
+
+.hero-rule {
+  width: 52px; height: 2px;
+  background: var(--orange);
+  margin-bottom: 1.8rem;
+  opacity: 0;
+  animation: fadeIn .5s 1.1s forwards;
+}
+.hero-body {
+  font-family: var(--UI);
+  font-size: clamp(.9rem,1.4vw,1.1rem);
+  color: var(--muted);
+  max-width: 460px;
+  line-height: 1.75;
+  opacity: 0;
+  animation: fadeUp .6s 1.2s forwards;
+}
+.hero-body em { color: #888; font-style: italic; }
+
+.hero-meta {
+  margin-top: 2.5rem;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp .6s 1.4s forwards;
+}
+.hero-meta-item {
+  font-family: var(--UI);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.hero-meta-item::before {
+  content: '';
+  display: inline-block;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--orange);
+}
+
+.scroll-cue {
+  position: absolute;
+  bottom: 2.5rem; left: 3rem;
+  display: flex; align-items: center; gap: .75rem;
+  opacity: 0;
+  animation: fadeIn .6s 2s forwards;
+  cursor: pointer;
+}
+.scroll-cue span {
+  font-family: var(--UI);
+  font-size: .65rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.scroll-cue-line {
+  width: 36px; height: 1px;
+  background: linear-gradient(to right, var(--orange), transparent);
+  animation: scrollPulse 2.5s ease-in-out infinite;
+}
+
+/* ─── SECTION SHELL ─────────────────────────────────── */
+section { padding: 7rem 3rem; position: relative; z-index: 1; }
+@media (max-width: 680px) { section { padding: 5rem 1.5rem; } #hero { padding: 6rem 1.5rem 4rem; } }
+
+.s-label {
+  font-family: var(--UI);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: .9rem;
+}
+.s-title {
+  font-family: var(--F);
+  font-size: clamp(2.8rem,5.5vw,5.5rem);
+  line-height: 1;
+  margin-bottom: 4rem;
+}
+
+/* ─── REVEAL ────────────────────────────────────────── */
+.rv {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .75s ease, transform .75s cubic-bezier(.16,1,.3,1);
+}
+.rv.on { opacity: 1; transform: none; }
+.rv.d1 { transition-delay: .08s; }
+.rv.d2 { transition-delay: .18s; }
+.rv.d3 { transition-delay: .28s; }
+.rv.d4 { transition-delay: .38s; }
+.rv.d5 { transition-delay: .48s; }
+
+/* ─── STATS ─────────────────────────────────────────── */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  border: 1px solid var(--border);
+  margin-bottom: 5rem;
+}
+.stat {
+  padding: 2.25rem 2.5rem;
+  border-right: 1px solid var(--border);
+}
+.stat:last-child { border-right: none; }
+.stat-n {
+  font-family: var(--F);
+  font-size: 3.8rem;
+  color: var(--orange);
+  line-height: 1;
+  margin-bottom: .4rem;
+}
+.stat-l {
+  font-family: var(--UI);
+  font-size: .72rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+@media (max-width: 680px) {
+  .stats { grid-template-columns: 1fr; }
+  .stat { border-right: none; border-bottom: 1px solid var(--border); }
+  .stat:last-child { border-bottom: none; }
+}
+
+/* ─── TIMELINE ──────────────────────────────────────── */
+.tl {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  position: relative;
+}
+.tl::before {
+  content: '';
+  position: absolute;
+  top: .35rem; left: 0; right: 0;
+  height: 1px; background: var(--border);
+}
+.tl-item { padding: 0 2rem; }
+.tl-item:first-child { padding-left: 0; }
+.tl-item:last-child { padding-right: 0; }
+.tl-dot {
+  width: 9px; height: 9px;
+  background: var(--orange);
+  border-radius: 50%;
+  margin-bottom: 1.5rem;
+  position: relative; z-index: 1;
+  animation: dotPulse 3s ease-in-out infinite;
+}
+.tl-item:nth-child(2) .tl-dot { animation-delay: 1s; }
+.tl-item:nth-child(3) .tl-dot { animation-delay: 2s; }
+.tl-phase {
+  font-family: var(--UI);
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: .6rem;
+}
+.tl-name {
+  font-family: var(--F);
+  font-size: 2rem;
+  margin-bottom: .3rem;
+}
+.tl-hours {
+  font-family: var(--UI);
+  font-size: .78rem;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+}
+.tl-list { list-style: none; }
+.tl-list li {
+  font-size: .85rem;
+  color: #555;
+  padding: .3rem 0;
+  border-bottom: 1px solid var(--faint);
+  display: flex;
+  gap: .75rem;
+}
+.tl-list li::before { content: '-'; color: var(--faint); flex-shrink: 0; }
+@media (max-width: 680px) {
+  .tl { grid-template-columns: 1fr; gap: 2.5rem; }
+  .tl::before { display: none; }
+  .tl-item { padding: 0; }
+}
+
+/* ─── METAFOOR ──────────────────────────────────────── */
+#metafoor { background: var(--dark); border-top: 1px solid var(--border); }
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  border: 1px solid var(--border);
+  min-height: 480px;
+  overflow: hidden;
+}
+.split-panel {
+  padding: 3.5rem;
+  position: relative;
+  transition: background .4s;
+  overflow: hidden;
+}
+.split-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .4s;
+}
+.sp-rijder::after  { background: radial-gradient(ellipse at 0% 60%, rgba(255,82,0,.09) 0%, transparent 65%); }
+.sp-machine::after { background: radial-gradient(ellipse at 100% 60%, rgba(255,179,0,.07) 0%, transparent 65%); }
+.split-panel:hover::after { opacity: 1; }
+
+.split-div {
+  width: 1px;
+  background: var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.split-x {
+  background: var(--dark);
+  border: 1px solid var(--border);
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--F);
+  font-size: .85rem;
+  color: var(--muted);
+}
+
+.sp-eyebrow {
+  font-family: var(--UI);
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  margin-bottom: .9rem;
+}
+.sp-rijder .sp-eyebrow  { color: var(--orange); }
+.sp-machine .sp-eyebrow { color: var(--amber); }
+
+.sp-title {
+  font-family: var(--F);
+  font-size: clamp(2.5rem,3.8vw,4.2rem);
+  line-height: 1;
+  margin-bottom: .2rem;
+}
+.sp-book {
+  font-size: .82rem;
+  font-style: italic;
+  color: var(--muted);
+  margin-bottom: 2rem;
+}
+
+.sp-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 2.5rem; }
+.sp-tag {
+  font-family: var(--UI);
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .25rem .7rem;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  transition: all .25s;
+}
+.sp-rijder:hover .sp-tag  { border-color: rgba(255,82,0,.5); color: var(--orange); }
+.sp-machine:hover .sp-tag { border-color: rgba(255,179,0,.5); color: var(--amber); }
+
+.sp-quote {
+  font-style: italic;
+  font-size: .88rem;
+  color: #555;
+  line-height: 1.7;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.synth {
+  margin-top: 2.5rem;
+  padding: 2.5rem 3rem;
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.synth::before {
+  content: 'SYNTHESE';
+  position: absolute;
+  right: 2rem; top: 1.2rem;
+  font-family: var(--F);
+  font-size: 5.5rem;
+  color: var(--faint);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+.synth p {
+  font-size: .98rem;
+  line-height: 1.85;
+  color: #666;
+  max-width: 680px;
+  position: relative; z-index: 1;
+}
+.synth strong { color: var(--text); font-weight: 500; }
+
+@media (max-width: 680px) {
+  .split { grid-template-columns: 1fr; }
+  .split-div { display: none; }
+  .split-panel { padding: 2.5rem 1.5rem; }
+  .synth { padding: 2rem 1.5rem; }
+  .synth::before { font-size: 3rem; }
+}
+
+/* ─── INZICHTEN ─────────────────────────────────────── */
+#inzichten { border-top: 1px solid var(--border); }
+
+.inz-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  border: 1px solid var(--border);
+}
+.inz-card {
+  padding: 3rem 2.5rem;
+  border-right: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  transition: background .3s;
+}
+.inz-card:last-child { border-right: none; }
+.inz-card:hover { background: var(--surface); }
+
+.inz-n {
+  font-family: var(--F);
+  font-size: 4.5rem;
+  color: var(--faint);
+  line-height: 1;
+  margin-bottom: 1.8rem;
+  transition: color .3s;
+}
+.inz-card:hover .inz-n { color: var(--orange); }
+
+.inz-title { font-family: var(--F); font-size: 2.1rem; margin-bottom: .25rem; }
+.inz-jp {
+  font-family: var(--UI);
+  font-size: .7rem;
+  color: var(--orange);
+  letter-spacing: .18em;
+  margin-bottom: 1.4rem;
+}
+.inz-body { font-size: .88rem; color: #5a5a5a; line-height: 1.8; }
+
+.inz-bar {
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 2px;
+  background: var(--orange);
+  width: 0;
+  transition: width .45s cubic-bezier(.16,1,.3,1);
+}
+.inz-card:hover .inz-bar { width: 100%; }
+
+@media (max-width: 680px) {
+  .inz-grid { grid-template-columns: 1fr; }
+  .inz-card { border-right: none; border-bottom: 1px solid var(--border); }
+  .inz-card:last-child { border-bottom: none; }
+}
+
+/* ─── QUIZ ──────────────────────────────────────────── */
+#quiz {
+  background: var(--dark);
+  border-top: 1px solid var(--border);
+}
+
+.quiz-wrap { max-width: 720px; margin: 0 auto; }
+
+.q-prog {
+  position: relative;
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 3.5rem;
+}
+.q-prog-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--orange);
+  transition: width .55s cubic-bezier(.16,1,.3,1);
+}
+.q-step {
+  position: absolute;
+  top: -1.6rem; right: 0;
+  font-family: var(--UI);
+  font-size: .65rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.q-screen { display: none; }
+.q-screen.active {
+  display: block;
+  animation: fadeUp .45s cubic-bezier(.16,1,.3,1) forwards;
+}
+
+.q-badge {
+  display: inline-block;
+  font-family: var(--UI);
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  padding: .22rem .65rem;
+  border: 1px solid;
+  margin-bottom: 1.5rem;
+}
+.q-badge.know { color: var(--amber); border-color: rgba(255,179,0,.4); }
+.q-badge.pers { color: var(--orange); border-color: rgba(255,82,0,.4); }
+
+.q-text {
+  font-family: var(--F);
+  font-size: clamp(1.6rem,2.8vw,2.6rem);
+  line-height: 1.15;
+  margin-bottom: 2.25rem;
+}
+
+.q-opts { display: flex; flex-direction: column; gap: .65rem; margin-bottom: 2.25rem; }
+
+.q-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.1rem 1.4rem;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font-family: var(--B);
+  font-size: .92rem;
+  text-align: left;
+  width: 100%;
+  transition: border-color .2s, background .2s;
+  position: relative;
+  overflow: hidden;
+}
+.q-opt::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--orange);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.q-opt:hover { border-color: rgba(255,82,0,.6); }
+.q-opt:hover::before { opacity: .04; }
+.q-opt.sel  { border-color: var(--orange); background: rgba(255,82,0,.07); }
+.q-opt.ok   { border-color: #4caf50;       background: rgba(76,175,80,.07); }
+.q-opt.bad  { border-color: #f44336;       background: rgba(244,67,54,.07); }
+.q-opt:disabled { cursor: default; }
+.q-opt:disabled:hover { border-color: var(--border); }
+.q-opt.sel:disabled:hover  { border-color: var(--orange); }
+.q-opt.ok:disabled:hover   { border-color: #4caf50; }
+.q-opt.bad:disabled:hover  { border-color: #f44336; }
+
+.q-letter {
+  font-family: var(--F);
+  font-size: 1.05rem;
+  color: var(--muted);
+  min-width: 1.4rem;
+  position: relative; z-index: 1;
+  transition: color .2s;
+}
+.q-opt:hover .q-letter, .q-opt.sel .q-letter { color: var(--orange); }
+.q-opt.ok .q-letter  { color: #4caf50; }
+.q-opt.bad .q-letter { color: #f44336; }
+.q-opt-text { position: relative; z-index: 1; line-height: 1.5; }
+
+.q-expl {
+  padding: 1.1rem 1.4rem;
+  border-left: 2px solid var(--orange);
+  background: rgba(255,82,0,.05);
+  font-size: .85rem;
+  color: #777;
+  line-height: 1.75;
+  margin-bottom: 2rem;
+  display: none;
+}
+.q-expl.show { display: block; animation: fadeIn .3s forwards; }
+.q-expl.pers-style { border-color: var(--amber); background: rgba(255,179,0,.05); }
+
+.q-btn {
+  font-family: var(--F);
+  font-size: 1.05rem;
+  letter-spacing: .1em;
+  padding: .9rem 2.25rem;
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background .2s, transform .1s;
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+}
+.q-btn:hover { background: #df4800; }
+.q-btn:active { transform: scale(.98); }
+.q-btn:disabled { opacity: .25; cursor: not-allowed; }
+.q-btn:disabled:hover { background: var(--orange); }
+
+/* ─── RESULT ────────────────────────────────────────── */
+.result { text-align: center; }
+
+.result-badge {
+  display: inline-block;
+  font-family: var(--UI);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  padding: .35rem .9rem;
+  border: 1px solid var(--orange);
+  color: var(--orange);
+  margin-bottom: 2rem;
+}
+.result-type {
+  font-family: var(--F);
+  font-size: clamp(3rem,7vw,7.5rem);
+  line-height: 1;
+  margin-bottom: .5rem;
+  animation: scaleIn .65s cubic-bezier(.16,1,.3,1) forwards;
+}
+.result-sub {
+  font-family: var(--UI);
+  font-size: .78rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 2.5rem;
+}
+.result-desc {
+  max-width: 500px;
+  margin: 0 auto 3rem;
+  font-size: .95rem;
+  color: #666;
+  line-height: 1.85;
+}
+.result-score {
+  font-family: var(--F);
+  font-size: 3.5rem;
+  color: var(--orange);
+  line-height: 1;
+  margin-bottom: .3rem;
+}
+.result-score-sub { font-size: 1.8rem; color: var(--muted); }
+.score-msg {
+  font-family: var(--UI);
+  font-size: .75rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 3rem;
+}
+.result-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.q-btn-sec {
+  font-family: var(--F);
+  font-size: 1.05rem;
+  letter-spacing: .1em;
+  padding: .9rem 2.25rem;
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+.q-btn-sec:hover { border-color: var(--text); color: var(--text); }
+
+/* ─── FOOTER ────────────────────────────────────────── */
+footer {
+  padding: 3.5rem 3rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ft-name { font-family: var(--F); font-size: 1.5rem; }
+.ft-sub {
+  font-family: var(--UI);
+  font-size: .7rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: .2rem;
+}
+.ft-right {
+  font-family: var(--UI);
+  font-size: .72rem;
+  color: var(--border);
+  letter-spacing: .08em;
+  text-align: right;
+}
+@media (max-width: 680px) {
+  footer { flex-direction: column; gap: 1.25rem; text-align: center; }
+  .ft-right { text-align: center; }
+}
+
+/* ─── KEYFRAMES ─────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; } to { opacity: 1; }
+}
+@keyframes slideUp {
+  to { transform: none; }
+}
+@keyframes scrollPulse {
+  0%,100% { opacity: 1; transform: scaleX(1); }
+  50%      { opacity: .4; transform: scaleX(.6); }
+}
+@keyframes dotPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(255,82,0,.4); }
+  50%      { box-shadow: 0 0 0 5px rgba(255,82,0,0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(.85); }
+  to   { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor"></div>
+<div id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">Senn Lauwers</a>
+  <div class="nav-links">
+    <a href="#verhaal">Project</a>
+    <a href="#metafoor">Metafoor</a>
+    <a href="#inzichten">Inzichten</a>
+    <a href="#quiz" class="nav-cta">Quiz →</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-eyebrow">Vrij Project &middot; Technische Bedrijfskunde &middot; 2026</div>
+  <h1 class="hero-title">
+    <span class="line"><span>DE RIJDER</span></span>
+    <span class="line"><span>&amp;</span></span>
+    <span class="line"><span>DE MACHINE</span></span>
+  </h1>
+  <div class="hero-rule"></div>
+  <p class="hero-body">Een synthese van <em>Good to Great</em> en <em>Lean Thinking</em>, want Jeffrey Herlings wint niet omdat hij de beste Honda heeft. Hij wint omdat hij &eacute;n zijn motor de beste zijn.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">Jim Collins</div>
+    <div class="hero-meta-item">James P. Womack</div>
+    <div class="hero-meta-item">81,5 uur</div>
+    <div class="hero-meta-item">HAN University</div>
+  </div>
+  <div class="scroll-cue" onclick="document.getElementById('verhaal').scrollIntoView({behavior:'smooth'})">
+    <span>Scroll</span>
+    <div class="scroll-cue-line"></div>
+  </div>
+</section>
+
+<!-- ═══ VERHAAL ════════════════════════════════════════ -->
+<section id="verhaal">
+  <div class="s-label rv">Het Project</div>
+  <h2 class="s-title rv d1">Hoe het ging.</h2>
+
+  <div class="stats rv d2">
+    <div class="stat">
+      <div class="stat-n" data-target="81.5" data-suffix=" uur">0</div>
+      <div class="stat-l">Totaal besteed</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n" data-target="2" data-suffix=" boeken">0</div>
+      <div class="stat-l">Geanalyseerd</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n" data-target="2500" data-suffix=" woorden">0</div>
+      <div class="stat-l">Eindessay</div>
+    </div>
+  </div>
+
+  <div class="tl">
+    <div class="tl-item rv d1">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Fase 01</div>
+      <div class="tl-name">Voorbereiding</div>
+      <div class="tl-hours">Jan &ndash; Feb 2026 &middot; 23,5 uur</div>
+      <ul class="tl-list">
+        <li>PVA geschreven &amp; goedgekeurd</li>
+        <li>Good to Great uitgelezen</li>
+        <li>Lean Thinking gestart</li>
+      </ul>
+    </div>
+    <div class="tl-item rv d2">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Fase 02</div>
+      <div class="tl-name">Uitvoering</div>
+      <div class="tl-hours">Mrt &ndash; Apr 2026 &middot; 39 uur</div>
+      <ul class="tl-list">
+        <li>Beide boeken geanalyseerd</li>
+        <li>Motorcross-metafoor bedacht</li>
+        <li>Eerste versie samenvatting</li>
+      </ul>
+    </div>
+    <div class="tl-item rv d3">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Fase 03</div>
+      <div class="tl-name">Verfijning</div>
+      <div class="tl-hours">Apr &ndash; Mei 2026 &middot; 19 uur</div>
+      <ul class="tl-list">
+        <li>Volledige herschrijfslag</li>
+        <li>Reflectie geschreven</li>
+        <li>Definitieve versie opgeleverd</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ METAFOOR ═══════════════════════════════════════ -->
+<section id="metafoor">
+  <div class="s-label rv">De Kernmetafoor</div>
+  <h2 class="s-title rv d1">Rijder vs. Machine.</h2>
+
+  <div class="split rv d2">
+    <div class="split-panel sp-rijder">
+      <div class="sp-eyebrow">Good to Great</div>
+      <div class="sp-title">De Rijder</div>
+      <div class="sp-book">Jim Collins, 2001</div>
+      <div class="sp-tags">
+        <span class="sp-tag">Level 5 Leiderschap</span>
+        <span class="sp-tag">First Who</span>
+        <span class="sp-tag">Discipline</span>
+        <span class="sp-tag">Vliegwiel</span>
+      </div>
+      <div class="sp-quote">&ldquo;De beste rijder trekt niet de aandacht. Hij of zij bouwt systematisch aan iets groters dan zichzelf, bescheiden van aard, fanatiek van wil.&rdquo;</div>
+    </div>
+    <div class="split-div"><div class="split-x">&times;</div></div>
+    <div class="split-panel sp-machine">
+      <div class="sp-eyebrow">Lean Thinking</div>
+      <div class="sp-title">De Machine</div>
+      <div class="sp-book">James P. Womack, 1996</div>
+      <div class="sp-tags">
+        <span class="sp-tag">Waardestroom</span>
+        <span class="sp-tag">Flow</span>
+        <span class="sp-tag">Pull</span>
+        <span class="sp-tag">Kaizen</span>
+      </div>
+      <div class="sp-quote">&ldquo;Een perfect afgestelde machine verspilt niets. Elke beweging heeft een reden, elke stap voegt waarde toe voor de klant.&rdquo;</div>
+    </div>
+  </div>
+
+  <div class="synth rv d3">
+    <p>Collins en Womack lijken elkaars tegenhangers, <strong>mensen vs. systemen</strong>, maar komen op hetzelfde uit: kleine, consistente verbeteringen over tijd. Het vliegwiel van Collins is kaizen van Womack. <strong>De rijder zonder machine verliest. De machine zonder rijder staat stil.</strong> Duurzame grootheid vereist allebei.</p>
+  </div>
+</section>
+
+<!-- ═══ INZICHTEN ══════════════════════════════════════ -->
+<section id="inzichten">
+  <div class="s-label rv">Top 3 Inzichten</div>
+  <h2 class="s-title rv d1">Wat ik meeneem.</h2>
+
+  <div class="inz-grid">
+    <div class="inz-card rv d1">
+      <div class="inz-n">01</div>
+      <div class="inz-title">Kaizen</div>
+      <div class="inz-jp">改善 &middot; Continue verbetering</div>
+      <div class="inz-body">Er is geen moment waarop het goed genoeg is. De organisaties die het verst komen, stellen zich elke dag dezelfde vraag: hoe kan dit &eacute;&eacute;n procent beter? Niet morgen, vandaag.</div>
+      <div class="inz-bar"></div>
+    </div>
+    <div class="inz-card rv d2">
+      <div class="inz-n">02</div>
+      <div class="inz-title">Muda</div>
+      <div class="inz-jp">無駄 &middot; Verspilling</div>
+      <div class="inz-body">Vraag bij elke activiteit: voegt dit waarde toe voor de klant? Zo niet, stop ermee. Niet later. Nu. Muda is overal zodra je leert het te zien, in meetings, processen, en e-mails.</div>
+      <div class="inz-bar"></div>
+    </div>
+    <div class="inz-card rv d3">
+      <div class="inz-n">03</div>
+      <div class="inz-title">First Who</div>
+      <div class="inz-jp">Then What &middot; Collins&rsquo; Wet</div>
+      <div class="inz-body">Strategie zonder de juiste mensen is een kaart zonder een rijder. Zet eerst de juiste mensen op de bus, d&aacute;n bepaal je de route. Een sterk team lost alles op.</div>
+      <div class="inz-bar"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ QUIZ ════════════════════════════════════════════ -->
+<section id="quiz">
+  <div class="s-label rv">Doe de Test</div>
+  <h2 class="s-title rv d1">Wat weet jij?</h2>
+
+  <div class="quiz-wrap rv d2">
+    <div class="q-prog">
+      <div class="q-prog-fill" id="qFill" style="width:0%"></div>
+      <div class="q-step" id="qStep">Vraag 1 / 4</div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="q-screen active" id="qs1">
+      <div class="q-badge know">Kennischeck</div>
+      <div class="q-text">Wat beschrijft het vliegwielprincipe van Collins?</div>
+      <div class="q-opts">
+        <button class="q-opt" data-q="1" data-ok="false"><span class="q-letter">A</span><span class="q-opt-text">E&eacute;n grote strategische pivot bepaalt het succes van een organisatie</span></button>
+        <button class="q-opt" data-q="1" data-ok="true"><span class="q-letter">B</span><span class="q-opt-text">Consistente, kleine druk in dezelfde richting leidt tot exponenti&euml;le groei</span></button>
+        <button class="q-opt" data-q="1" data-ok="false"><span class="q-letter">C</span><span class="q-opt-text">Snel schalen via fusies en overnames geeft de grootste voorsprong</span></button>
+        <button class="q-opt" data-q="1" data-ok="false"><span class="q-letter">D</span><span class="q-opt-text">Taken delegeren naar het middenmanagement zorgt voor vrijheid bovenin</span></button>
+      </div>
+      <div class="q-expl" id="e1">Het vliegwiel is een metafoor: een zwaar, traag wiel dat met elke kleine duw net iets sneller gaat draaien. Na jaren consistente richting komt er momentum, niet door &eacute;&eacute;n grote doorbraak, maar door duizenden kleine.</div>
+      <button class="q-btn" id="nb1" disabled onclick="goTo(2)">Volgende &rarr;</button>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-screen" id="qs2">
+      <div class="q-badge know">Kennischeck</div>
+      <div class="q-text">Wat betekent &lsquo;Muda&rsquo; in Lean Thinking?</div>
+      <div class="q-opts">
+        <button class="q-opt" data-q="2" data-ok="false"><span class="q-letter">A</span><span class="q-opt-text">Continue verbetering van alle processen in kleine stappen</span></button>
+        <button class="q-opt" data-q="2" data-ok="false"><span class="q-letter">B</span><span class="q-opt-text">De optimale productiesnelheid waarbij niemand wacht</span></button>
+        <button class="q-opt" data-q="2" data-ok="true"><span class="q-letter">C</span><span class="q-opt-text">Verspilling, elke activiteit die g&eacute;&eacute;n waarde toevoegt voor de klant</span></button>
+        <button class="q-opt" data-q="2" data-ok="false"><span class="q-letter">D</span><span class="q-opt-text">Een Japanse methode voor kwaliteitscontrole aan het einde van de lijn</span></button>
+      </div>
+      <div class="q-expl" id="e2">Muda (無駄) is &eacute;&eacute;n van de drie M&rsquo;s in Lean, naast Mura (onregelmatigheid) en Muri (overbelasting). De zeven klassieke vormen: overproductie, wachten, transport, overbewerking, voorraad, beweging, en fouten.</div>
+      <button class="q-btn" id="nb2" disabled onclick="goTo(3)">Volgende &rarr;</button>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-screen" id="qs3">
+      <div class="q-badge know">Kennischeck</div>
+      <div class="q-text">Wat onderscheidt een Level 5 Leader volgens Collins?</div>
+      <div class="q-opts">
+        <button class="q-opt" data-q="3" data-ok="false"><span class="q-letter">A</span><span class="q-opt-text">Sterk charisma en publieke aanwezigheid in de media</span></button>
+        <button class="q-opt" data-q="3" data-ok="true"><span class="q-letter">B</span><span class="q-opt-text">Persoonlijke bescheidenheid gecombineerd met ijzersterke professionele wilskracht</span></button>
+        <button class="q-opt" data-q="3" data-ok="false"><span class="q-letter">C</span><span class="q-opt-text">Hoge risicobereidheid en snelle, intu&iuml;tieve besluitvorming</span></button>
+        <button class="q-opt" data-q="3" data-ok="false"><span class="q-letter">D</span><span class="q-opt-text">Extern aangetrokken vanwege een frisse blik van buiten</span></button>
+      </div>
+      <div class="q-expl" id="e3">Collins ontdekte dat de CEO&rsquo;s van great-bedrijven zelden de flamboyante visionairen waren. Ze waren bescheiden, maar hadden tegelijk een fanatieke drive om te winnen. Paradoxaal, maar consistent in alle onderzochte bedrijven.</div>
+      <button class="q-btn" id="nb3" disabled onclick="goTo(4)">Volgende &rarr;</button>
+    </div>
+
+    <!-- Q4 -->
+    <div class="q-screen" id="qs4">
+      <div class="q-badge pers">Persoonlijkheid</div>
+      <div class="q-text">Je team loopt vast op een terugkerend probleem. Hoe reageer jij?</div>
+      <div class="q-opts">
+        <button class="q-opt" data-q="4" data-ok="true" data-type="rijder"><span class="q-letter">A</span><span class="q-opt-text">Ik bespreek het met het team, de juiste mensen lossen het het beste zelf op</span></button>
+        <button class="q-opt" data-q="4" data-ok="true" data-type="machine"><span class="q-letter">B</span><span class="q-opt-text">Ik breng de processtap in kaart en elimineer de verspilling aan de bron</span></button>
+        <button class="q-opt" data-q="4" data-ok="true" data-type="synthese"><span class="q-letter">C</span><span class="q-opt-text">Ik combineer beide: mensen &eacute;n proces samen verbeteren, meten, herhalen</span></button>
+      </div>
+      <div class="q-expl pers-style" id="e4">Er is geen goed of fout, elke benadering heeft waarde. De synthese is dat duurzame organisaties mensen &eacute;n processen verbinden. Maar jouw instinct vertelt iets over hoe je naar organisaties kijkt.</div>
+      <button class="q-btn" id="nb4" disabled onclick="showResult()">Bekijk resultaat &rarr;</button>
+    </div>
+
+    <!-- RESULT -->
+    <div class="q-screen" id="qsResult">
+      <div class="result">
+        <div class="result-badge">Jouw profiel</div>
+        <div class="result-type" id="rType">-</div>
+        <div class="result-sub" id="rSub"></div>
+        <p class="result-desc" id="rDesc"></p>
+        <div class="result-score"><span id="rScore">0</span><span class="result-score-sub">/3</span></div>
+        <div class="score-msg" id="rMsg"></div>
+        <div class="result-actions">
+          <button class="q-btn" onclick="window.open('https://www.linkedin.com/in/sennlauwers','_blank')">Verbinden op LinkedIn &nearr;</button>
+          <button class="q-btn-sec" onclick="resetQuiz()">Opnieuw doen</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /quiz-wrap -->
+</section>
+
+<!-- ═══ FOOTER ══════════════════════════════════════════ -->
+<footer>
+  <div>
+    <div class="ft-name">Senn Lauwers</div>
+    <div class="ft-sub">Technische Bedrijfskunde &middot; Semester 8 &middot; HAN &middot; 2026</div>
+  </div>
+  <div class="ft-right">
+    Good to Great &times; Lean Thinking<br>
+    <span style="color:#1e1e1e">Vrij Project</span>
+  </div>
+</footer>
+
+<script>
+/* ── CURSOR ──────────────────────────────────────────── */
+const cur = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cur.style.left = mx + 'px';
+  cur.style.top  = my + 'px';
+});
+(function animRing() {
+  rx += (mx - rx) * .11;
+  ry += (my - ry) * .11;
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+  requestAnimationFrame(animRing);
+})();
+
+document.querySelectorAll('a,button,.scroll-cue').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cur.style.transform = 'translate(-50%,-50%) scale(.4)';
+    ring.style.width = ring.style.height = '50px';
+    ring.style.borderColor = 'rgba(255,82,0,.8)';
+  });
+  el.addEventListener('mouseleave', () => {
+    cur.style.transform = 'translate(-50%,-50%) scale(1)';
+    ring.style.width = ring.style.height = '34px';
+    ring.style.borderColor = 'rgba(255,82,0,.45)';
+  });
+});
+
+/* ── NAV ─────────────────────────────────────────────── */
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', scrollY > 60);
+}, { passive: true });
+
+/* ── REVEAL ON SCROLL ────────────────────────────────── */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+}, { threshold: .1 });
+document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+
+/* ── COUNTER ANIMATION ───────────────────────────────── */
+const ctrObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target;
+    const tgt = parseFloat(el.dataset.target);
+    const sfx = el.dataset.suffix || '';
+    const dec = String(tgt).includes('.');
+    const dur = 1400;
+    const t0 = performance.now();
+    (function tick(now) {
+      const p = Math.min((now - t0) / dur, 1);
+      const ease = 1 - Math.pow(1 - p, 3);
+      const v = tgt * ease;
+      el.textContent = (dec ? v.toFixed(1) : Math.floor(v).toLocaleString('nl-NL')) + sfx;
+      if (p < 1) requestAnimationFrame(tick);
+    })(performance.now());
+    ctrObs.unobserve(el);
+  });
+}, { threshold: .5 });
+document.querySelectorAll('.stat-n[data-target]').forEach(el => ctrObs.observe(el));
+
+/* ── QUIZ ────────────────────────────────────────────── */
+let kScore = 0;
+let pType  = 'synthese';
+const answered = {};
+
+document.querySelectorAll('.q-opt').forEach(btn => {
+  btn.addEventListener('click', function () {
+    const q = this.dataset.q;
+    if (answered[q]) return;
+    answered[q] = true;
+
+    const allOpts = document.querySelectorAll(`.q-opt[data-q="${q}"]`);
+    allOpts.forEach(o => o.disabled = true);
+
+    if (q !== '4') {
+      // knowledge
+      const correct = this.dataset.ok === 'true';
+      allOpts.forEach(o => {
+        if (o.dataset.ok === 'true') o.classList.add('ok');
+        else if (o === this && !correct) o.classList.add('bad');
+      });
+      if (correct) kScore++;
+    } else {
+      // personality
+      pType = this.dataset.type || 'synthese';
+      this.classList.add('sel');
+    }
+
+    document.getElementById('e' + q).classList.add('show');
+    const nb = document.getElementById('nb' + q);
+    nb.disabled = false;
+    nb.style.animation = 'dotPulse .8s ease infinite';
+  });
+});
+
+function goTo(n) {
+  document.querySelector('.q-screen.active').classList.remove('active');
+  document.getElementById('qs' + n).classList.add('active');
+  const pct = ((n - 1) / 4) * 100;
+  document.getElementById('qFill').style.width = pct + '%';
+  document.getElementById('qStep').textContent = `Vraag ${n} / 4`;
+}
+
+const profiles = {
+  rijder: {
+    type: 'De Rijder',
+    sub:  'Good to Great &middot; Collins',
+    desc: 'Jij gelooft in mensen boven systemen. Je stelt de juiste mensen op de juiste plek en vertrouwt erop dat zij de oplossing vinden. Bescheiden naar buiten, onverbiddelijk in je richting.'
+  },
+  machine: {
+    type: 'De Machine',
+    sub:  'Lean Thinking &middot; Womack',
+    desc: 'Jij denkt in processen. Je ziet verspilling waar anderen gewoon werken zien. Elke stap moet waarde toevoegen, zo niet, dan elimineer je hem. Womack zou tevreden knikken.'
+  },
+  synthese: {
+    type: 'De Synthese',
+    sub:  'Collins &times; Womack',
+    desc: 'Jij combineert het beste van beide. Je weet dat mensen &eacute;n systemen samen nodig zijn voor duurzame groei. Rijder en machine onlosmakelijk verbonden, de kern van dit project.'
+  }
+};
+const scoreMsgs = [
+  'Tijd om de boeken te lezen',
+  'Je kent de basis, goed begin',
+  'Solide, je hebt het begrepen',
+  'Topprestatie, jij had dit project zelf kunnen schrijven'
+];
+
+function showResult() {
+  document.getElementById('qFill').style.width = '100%';
+  document.getElementById('qStep').textContent = 'Klaar!';
+
+  const p = profiles[pType] || profiles.synthese;
+  document.getElementById('rType').innerHTML = p.type;
+  document.getElementById('rSub').innerHTML  = p.sub;
+  document.getElementById('rDesc').innerHTML = p.desc;
+  document.getElementById('rScore').textContent = kScore;
+  document.getElementById('rMsg').innerHTML = scoreMsgs[kScore] || scoreMsgs[3];
+
+  document.querySelector('.q-screen.active').classList.remove('active');
+  document.getElementById('qsResult').classList.add('active');
+}
+
+function resetQuiz() {
+  kScore = 0; pType = 'synthese';
+  Object.keys(answered).forEach(k => delete answered[k]);
+
+  document.querySelectorAll('.q-opt').forEach(o => {
+    o.classList.remove('sel','ok','bad');
+    o.disabled = false;
+  });
+  document.querySelectorAll('.q-expl').forEach(e => e.classList.remove('show'));
+  ['nb1','nb2','nb3','nb4'].forEach(id => {
+    const b = document.getElementById(id);
+    b.disabled = true;
+    b.style.animation = '';
+  });
+
+  document.querySelector('.q-screen.active').classList.remove('active');
+  document.getElementById('qs1').classList.add('active');
+  document.getElementById('qFill').style.width = '0%';
+  document.getElementById('qStep').textContent = 'Vraag 1 / 4';
+}
+</script>
+</body>
+</html>
